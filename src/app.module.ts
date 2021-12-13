@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthController } from './auth/auth.controller';
 import { AuthModule } from './auth/auth.module';
 import { ClubModule } from './club/club.module';
 import { NoticeModule } from './notice/notice.module';
@@ -9,6 +8,8 @@ import { VoteModule } from './vote/vote.module';
 import { LetterModule } from './letter/letter.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import 'dotenv/config'
+import { Auth } from './auth/entities/auth.entity';
+import { Club } from './club/entities/club.entity';
 
 @Module({
   imports: [
@@ -18,8 +19,9 @@ import 'dotenv/config'
       port: +process.env.DB_PORT,
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
       synchronize: true,
-      entities: []
+      entities: [Auth, Club]
     }), 
     AuthModule, 
     ClubModule, 
