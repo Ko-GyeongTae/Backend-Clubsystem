@@ -8,6 +8,8 @@ import { VoteModule } from './vote/vote.module';
 import { LetterModule } from './letter/letter.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import 'dotenv/config'
+import { Auth } from './auth/entities/auth.entity';
+import { Club } from './club/entities/club.entity';
 
 @Module({
   imports: [
@@ -18,7 +20,7 @@ import 'dotenv/config'
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       synchronize: true,
-      entities: []
+      entities: [Auth, Club]
     }), 
     AuthModule, 
     ClubModule, 
