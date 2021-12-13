@@ -7,10 +7,27 @@ import { ClubModule } from './club/club.module';
 import { NoticeModule } from './notice/notice.module';
 import { VoteModule } from './vote/vote.module';
 import { LetterModule } from './letter/letter.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import 'dotenv/config'
 
 @Module({
-  imports: [AuthModule, ClubModule, NoticeModule, VoteModule, LetterModule],
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'mariadb',
+      host: process.env.DB_HOST,
+      port: +process.env.DB_PORT,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      synchronize: true,
+      entities: []
+    }), 
+    AuthModule, 
+    ClubModule, 
+    NoticeModule, 
+    VoteModule, 
+    LetterModule
+  ],
   controllers: [AppController, AuthController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
