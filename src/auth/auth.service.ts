@@ -9,7 +9,7 @@ import { Auth } from './entities/auth.entity';
 export class AuthService {
     constructor(
         @InjectRepository(Auth)
-        private authRepository: Repository<Auth>
+        private readonly authRepository: Repository<Auth>
     ){}
     public async findUserByUid(Uid: string){
         const user = await this.authRepository.findOne(Uid);
