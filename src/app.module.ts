@@ -27,7 +27,7 @@ import 'dotenv/config'
     VoteModule, 
     LetterModule
   ],
-  controllers: [AppController, AuthController],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule { }
