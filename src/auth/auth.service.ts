@@ -20,14 +20,10 @@ export class AuthService {
     }
 
     async signIn(body: SignInDTO){
-        return 'sign in';
+        return body;
     }
 
-    async signUpUser(body: SignUpDTO){
-        return 'user';
-    }
-    
-    async signUpAdmin(body: SignUpDTO){
-        return 'admin';
+    async signUp(body: SignUpDTO){
+        return body;
     }
 }

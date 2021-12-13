@@ -1,6 +1,6 @@
 import { IsString } from "class-validator";
 
-export type SignUpParam = 'USER' | 'ADMIN';
+export type UserType = 'user' | 'admin';
 
 export class SignUpDTO {
     @IsString()
@@ -11,6 +11,9 @@ export class SignUpDTO {
 
     @IsString()
     password: string;
+
+    @IsString()
+    type: UserType;
 
     @IsString()
     cid: string;
