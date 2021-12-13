@@ -1,7 +1,7 @@
 import { BaseEntity, Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class Auth extends BaseEntity {
+export class Club extends BaseEntity {
     @PrimaryGeneratedColumn()
     cid: string;
 
