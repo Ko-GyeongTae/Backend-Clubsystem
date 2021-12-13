@@ -18,6 +18,9 @@ export class Auth extends BaseEntity {
     name: string;
 
     @Column()
+    studentno: string;
+
+    @Column()
     password: string;
 
     @Column({ nullable: true })
