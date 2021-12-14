@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, PreconditionFailedException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SignInDTO } from './dto/signIn.dto';
@@ -6,6 +6,7 @@ import { SignUpDTO } from './dto/signUp.dto';
 import { Auth } from './entities/auth.entity';
 import * as bcrypt from 'bcrypt';
 import { Club } from 'src/club/entities/club.entity';
+import { JwtService } from '@nestjs/jwt';
 
 const HASH_LENGTH = 10;
 
@@ -15,7 +16,8 @@ export class AuthService {
         @InjectRepository(Auth)
         private readonly authRepository: Repository<Auth>,
         @InjectRepository(Club)
-        private readonly clubRepository: Repository<Club>
+        private readonly clubRepository: Repository<Club>,
+        private readonly jwtService: JwtService
     ){}
     public async findUserByUid(Uid: string){
         const user = await this.authRepository.findOne(Uid);
@@ -45,7 +47,20 @@ export class AuthService {
     }
 
     async signIn(body: SignInDTO){
-        return body;
+        const { id, password } = body;
+
+        const user = await this.authRepository.findOne({id});
+        
+        const isVerified = await bcrypt.compare(password, user.password);
+        if (!isVerified) {
+            throw new PreconditionFailedException('Wrong ID or PW');
+        }
+        const { name, studentno, type, club, ...other } = user;
+
+        const accessToken = this.jwtService.sign({ id, name, studentno, type, club });
+        return { 
+            "accessToken": accessToken
+        }
     }
 
     async signUp(body: SignUpDTO){
@@ -67,7 +82,7 @@ export class AuthService {
 
         const club = await this.clubRepository.findOne({cid});
 
-        const user = await this.authRepository.create({
+        await this.authRepository.create({
             id,
             name,
             type,
