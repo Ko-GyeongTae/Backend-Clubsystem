@@ -1,5 +1,5 @@
 import { Auth } from "src/auth/entities/auth.entity";
-import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Club extends BaseEntity {
@@ -15,8 +15,8 @@ export class Club extends BaseEntity {
     @Column()
     total: number; 
 
-    @ManyToOne(type => Auth, auth => auth.club, {
+    @OneToMany(() => Auth, auth => auth.club, {
         onDelete: 'NO ACTION',
     })
-    account?: Auth
+    accounts?: Auth[]
 }
