@@ -1,5 +1,5 @@
 import { Club } from "src/club/entities/club.entity";
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 export enum UserType {
     USER = 'USER',
@@ -30,8 +30,16 @@ export class Auth extends BaseEntity {
     type: keyof typeof UserType;
 
     @ManyToOne(() => Club, club => club.accounts, {
-        cascade: false
+        cascade: true
     })
-    @JoinColumn()
     club: Club;
+
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
+
+    @DeleteDateColumn()
+    deletedAt: Date;
 }

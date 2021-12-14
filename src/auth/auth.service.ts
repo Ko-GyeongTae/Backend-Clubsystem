@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, PreconditionFailedException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, PreconditionFailedException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SignInDTO } from './dto/signIn.dto';
@@ -19,8 +19,8 @@ export class AuthService {
         private readonly clubRepository: Repository<Club>,
         private readonly jwtService: JwtService
     ){}
-    public async findUserByUid(Uid: string){
-        const user = await this.authRepository.findOne(Uid);
+    public async findUserById(id: string){
+        const user = await this.authRepository.findOne({id});
         if (!user) {
             throw new UnauthorizedException();
         }
@@ -50,12 +50,15 @@ export class AuthService {
         const { id, password } = body;
 
         const user = await this.authRepository.findOne({id});
-        
-        const isVerified = await bcrypt.compare(password, user.password);
+        if (!user) {
+            throw new PreconditionFailedException('Wrong ID or PW');
+        }
+
+        const isVerified = await bcrypt.compare(password, user?.password);
         if (!isVerified) {
             throw new PreconditionFailedException('Wrong ID or PW');
         }
-        const { name, studentno, type, club, ...other } = user;
+        const { name, studentno, type, club } = user;
 
         const accessToken = this.jwtService.sign({ id, name, studentno, type, club });
         return { 
@@ -64,7 +67,7 @@ export class AuthService {
     }
 
     async signUp(body: SignUpDTO){
-        const { id, name, password, cid, studentno, type } = body;
+        const { id, name, password, studentno, type } = body;
 
         const result = await this.validateExistAccount({id});
 
@@ -80,16 +83,17 @@ export class AuthService {
 
         const hash = await bcrypt.hash(password, HASH_LENGTH);
 
-        const club = await this.clubRepository.findOne({cid});
-
         await this.authRepository.create({
             id,
             name,
             type,
             studentno,
-            club,
             password: hash
         })
         .save();
+    }
+
+    async dropOut() {
+        return 'drop out';
     }
 }

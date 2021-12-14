@@ -16,7 +16,4 @@ export class SignUpDTO {
 
     @IsString()
     type: UserType;
-
-    @IsString()
-    cid: string;
 }
