@@ -30,7 +30,7 @@ export class Auth extends BaseEntity {
     type: keyof typeof UserType;
 
     @ManyToOne(() => Club, club => club.accounts, {
-        cascade: false
+        cascade: true
     })
     club: Club;
 

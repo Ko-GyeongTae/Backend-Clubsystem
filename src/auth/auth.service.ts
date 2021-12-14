@@ -20,7 +20,7 @@ export class AuthService {
         private readonly jwtService: JwtService
     ){}
     public async findUserById(id: string){
-        const user = await this.authRepository.findOne(id);
+        const user = await this.authRepository.findOne({id});
         if (!user) {
             throw new UnauthorizedException();
         }
@@ -67,7 +67,7 @@ export class AuthService {
     }
 
     async signUp(body: SignUpDTO){
-        const { id, name, password, cid, studentno, type } = body;
+        const { id, name, password, studentno, type } = body;
 
         const result = await this.validateExistAccount({id});
 
@@ -83,17 +83,11 @@ export class AuthService {
 
         const hash = await bcrypt.hash(password, HASH_LENGTH);
 
-        const club = await this.clubRepository.findOne({cid});
-        if(!club){
-            throw new BadRequestException();
-        }
-
         await this.authRepository.create({
             id,
             name,
             type,
             studentno,
-            club,
             password: hash
         })
         .save();
