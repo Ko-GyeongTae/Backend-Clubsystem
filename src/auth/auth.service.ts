@@ -5,14 +5,17 @@ import { SignInDTO } from './dto/signIn.dto';
 import { SignUpDTO } from './dto/signUp.dto';
 import { Auth } from './entities/auth.entity';
 import * as bcrypt from 'bcrypt';
+import { Club } from 'src/club/entities/club.entity';
 
-const HASH_LENGTH = 20;
+const HASH_LENGTH = 10;
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(Auth)
-        private readonly authRepository: Repository<Auth>
+        private readonly authRepository: Repository<Auth>,
+        @InjectRepository(Club)
+        private readonly clubRepository: Repository<Club>
     ){}
     public async findUserByUid(Uid: string){
         const user = await this.authRepository.findOne(Uid);
@@ -25,19 +28,20 @@ export class AuthService {
     public async validateExistAccount(param: { id: string }){
         const { id } = param;
 
-        const account = await this.authRepository.find({
+        const account = await this.authRepository.findOne({
             where: {
                 id
             },
             select: ['uid'],
         })
 
-        if(!account){
+        if(account){
             return [
                 HttpStatus.PRECONDITION_FAILED,
                 'Same account is already exist'
             ];
         }
+        return [];
     }
 
     async signIn(body: SignInDTO){
@@ -45,7 +49,7 @@ export class AuthService {
     }
 
     async signUp(body: SignUpDTO){
-        const { id, name, password, cid, type } = body;
+        const { id, name, password, cid, studentno, type } = body;
 
         const result = await this.validateExistAccount({id});
 
@@ -61,11 +65,15 @@ export class AuthService {
 
         const hash = await bcrypt.hash(password, HASH_LENGTH);
 
-        this.authRepository.create({
+        const club = await this.clubRepository.findOne({cid});
+
+        const user = await this.authRepository.create({
             id,
             name,
             type,
-            password: hash,
+            studentno,
+            club,
+            password: hash
         })
         .save();
     }
