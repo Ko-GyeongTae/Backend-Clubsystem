@@ -1,6 +1,5 @@
 import { IsString } from "class-validator";
-
-export type UserType = 'user' | 'admin';
+import { UserType } from "../entities/auth.entity";
 
 export class SignUpDTO {
     @IsString()
@@ -11,6 +10,9 @@ export class SignUpDTO {
 
     @IsString()
     password: string;
+    
+    @IsString()
+    studentno: string;
 
     @IsString()
     type: UserType;

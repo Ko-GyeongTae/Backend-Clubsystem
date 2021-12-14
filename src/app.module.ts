@@ -8,8 +8,8 @@ import { VoteModule } from './vote/vote.module';
 import { LetterModule } from './letter/letter.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import 'dotenv/config'
-import { Auth } from './auth/entities/auth.entity';
 import { Club } from './club/entities/club.entity';
+import { Auth } from './auth/entities/auth.entity';
 import { HttpLoggerMiddleware } from './middleware/http.middleware';
 
 @Module({

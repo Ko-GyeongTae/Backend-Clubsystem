@@ -1,5 +1,5 @@
 import { Club } from "src/club/entities/club.entity";
-import { BaseEntity, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 export enum UserType {
     USER = 'USER',
@@ -29,9 +29,9 @@ export class Auth extends BaseEntity {
     @Column({ type: "enum", enum: UserType })
     type: keyof typeof UserType;
 
-    @OneToOne(type => Club, club => club.cid, {
+    @ManyToOne(() => Club, club => club.accounts, {
         cascade: false
     })
     @JoinColumn()
-    cid: Club
+    club: Club;
 }
