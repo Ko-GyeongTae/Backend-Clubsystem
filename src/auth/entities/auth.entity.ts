@@ -33,5 +33,5 @@ export class Auth extends BaseEntity {
         cascade: false
     })
     @JoinColumn()
-    club: Club
+    club: Club;
 }
