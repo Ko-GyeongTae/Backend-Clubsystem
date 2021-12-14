@@ -10,6 +10,9 @@ export class SignUpDTO {
 
     @IsString()
     password: string;
+    
+    @IsString()
+    studentno: string;
 
     @IsString()
     type: UserType;

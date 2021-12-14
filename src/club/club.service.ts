@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException, PreconditionFailedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { json } from 'stream/consumers';
 import { Repository } from 'typeorm';
 import { CreateClubDTO } from './dto/createClub.dto';
 import { Club } from './entities/club.entity';
