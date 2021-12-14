@@ -1,5 +1,7 @@
 import { Injectable, NotFoundException, PreconditionFailedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Auth } from 'src/auth/entities/auth.entity';
+import { Payload } from 'src/auth/jwt/jwt.startegy';
 import { Repository } from 'typeorm';
 import { CreateClubDTO } from './dto/createClub.dto';
 import { Club } from './entities/club.entity';
@@ -8,12 +10,14 @@ import { Club } from './entities/club.entity';
 export class ClubService {
     constructor(
         @InjectRepository(Club)
-        private readonly clubRepository: Repository<Club>
-    ){}
+        private readonly clubRepository: Repository<Club>,
+        @InjectRepository(Auth)
+        private readonly authRepository: Repository<Auth>
+    ) { }
     async getClubList() {
         const clublist = await this.clubRepository.findAndCount();
 
-        if(!clublist[1]) {
+        if (!clublist[1]) {
             throw new NotFoundException();
         }
 
@@ -27,13 +31,13 @@ export class ClubService {
         const { name, description, totalCnt } = body;
 
         const club = await this.clubRepository.findOne({
-            where: { 
-                name 
+            where: {
+                name
             },
             select: ["cid"],
         });
 
-        if(club){
+        if (club) {
             throw new PreconditionFailedException();
         }
 
@@ -42,6 +46,16 @@ export class ClubService {
             description,
             total: totalCnt,
         })
-        .save();
+            .save();
+    }
+
+    async deleteClub(user: Payload) {
+        const userInfo = await this.authRepository.createQueryBuilder("auth")
+            .innerJoinAndMapOne("auth.clubCid", Club, "club.cid")
+            .where("auth.id = :id", { id: user.id })
+            .getOne();
+
+        await this.clubRepository.delete({cid: userInfo["clubCid"].cid})
+        return userInfo;
     }
 }
