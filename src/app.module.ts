@@ -11,6 +11,7 @@ import 'dotenv/config'
 import { Club } from './club/entities/club.entity';
 import { Auth } from './auth/entities/auth.entity';
 import { HttpLoggerMiddleware } from './middleware/http.middleware';
+import { AttendanceModule } from './attendance/attendance.module';
 
 @Module({
   imports: [
@@ -28,7 +29,7 @@ import { HttpLoggerMiddleware } from './middleware/http.middleware';
     ClubModule, 
     NoticeModule, 
     VoteModule, 
-    LetterModule
+    LetterModule, AttendanceModule
   ],
   controllers: [AppController],
   providers: [AppService],
