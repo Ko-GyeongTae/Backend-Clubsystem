@@ -32,6 +32,5 @@ export class Auth extends BaseEntity {
     @ManyToOne(() => Club, club => club.accounts, {
         cascade: false
     })
-    @JoinColumn()
     club: Club;
 }
