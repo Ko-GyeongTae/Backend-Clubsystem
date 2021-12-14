@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, PreconditionFailedException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, PreconditionFailedException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SignInDTO } from './dto/signIn.dto';
@@ -50,12 +50,15 @@ export class AuthService {
         const { id, password } = body;
 
         const user = await this.authRepository.findOne({id});
-        
-        const isVerified = await bcrypt.compare(password, user.password);
+        if (!user) {
+            throw new PreconditionFailedException('Wrong ID or PW');
+        }
+
+        const isVerified = await bcrypt.compare(password, user?.password);
         if (!isVerified) {
             throw new PreconditionFailedException('Wrong ID or PW');
         }
-        const { name, studentno, type, club, ...other } = user;
+        const { name, studentno, type, club } = user;
 
         const accessToken = this.jwtService.sign({ id, name, studentno, type, club });
         return { 
@@ -81,6 +84,9 @@ export class AuthService {
         const hash = await bcrypt.hash(password, HASH_LENGTH);
 
         const club = await this.clubRepository.findOne({cid});
+        if(!club){
+            throw new BadRequestException();
+        }
 
         await this.authRepository.create({
             id,
@@ -91,5 +97,9 @@ export class AuthService {
             password: hash
         })
         .save();
+    }
+
+    async dropOut() {
+        return 'drop out';
     }
 }
