@@ -19,8 +19,8 @@ export class AuthService {
         private readonly clubRepository: Repository<Club>,
         private readonly jwtService: JwtService
     ){}
-    public async findUserByUid(Uid: string){
-        const user = await this.authRepository.findOne(Uid);
+    public async findUserById(id: string){
+        const user = await this.authRepository.findOne(id);
         if (!user) {
             throw new UnauthorizedException();
         }
