@@ -29,9 +29,9 @@ export class Auth extends BaseEntity {
     @Column({ type: "enum", enum: UserType })
     type: keyof typeof UserType;
 
-    @OneToOne(type => Club, club => club.cid, {
+    @OneToOne(type => Club, club => club.account, {
         cascade: false
     })
     @JoinColumn()
-    cid: Club
+    club: Club
 }
