@@ -15,8 +15,6 @@ export class AuthService {
     constructor(
         @InjectRepository(Auth)
         private readonly authRepository: Repository<Auth>,
-        @InjectRepository(Club)
-        private readonly clubRepository: Repository<Club>,
         private readonly jwtService: JwtService
     ){}
     public async findUserById(id: string){
@@ -46,10 +44,17 @@ export class AuthService {
         return [];
     }
 
-    async signIn(body: SignInDTO){
+    async signIn(param: object, body: SignInDTO){
         const { id, password } = body;
-
-        const user = await this.authRepository.findOne({id});
+        console.log(param, body);
+        let user = null;
+        switch(param["type"]){
+            case 'admin':
+                user = await this.authRepository.findOne({id});
+            case 'user':
+                user = await this.authRepository.findOne({id});
+        }
+        
         if (!user) {
             throw new PreconditionFailedException('Wrong ID or PW');
         }
