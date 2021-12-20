@@ -6,6 +6,7 @@ import { SignUpDTO } from './dto/signUp.dto';
 import { Auth } from './entities/auth.entity';
 import * as bcrypt from 'bcrypt';
 import { Club } from 'src/club/entities/club.entity';
+import { Payload } from 'src/auth/jwt/jwt.startegy';
 import { JwtService } from '@nestjs/jwt';
 
 const HASH_LENGTH = 10;
@@ -98,7 +99,13 @@ export class AuthService {
         .save();
     }
 
-    async dropOut() {
+    async dropOut(user: Payload) {
         return 'drop out';
+    }
+
+    async validateType(user: Payload) {
+        return {
+            "type": user.type,
+        }
     }
 }
