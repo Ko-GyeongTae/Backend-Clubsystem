@@ -27,6 +27,22 @@ export class ClubService {
         }
     }
 
+    async searchClub(param: string) {
+        const club = await this.clubRepository.findOne({name: param});
+
+        if (!club) {
+            return {
+                clubName: param,
+                isExist: false
+            }
+        } else {
+            return {
+                clubName: param,
+                isExist: true
+            }
+        }
+    }
+
     async createClub(body: CreateClubDTO) {
         const { name, description, totalCnt } = body;
 
