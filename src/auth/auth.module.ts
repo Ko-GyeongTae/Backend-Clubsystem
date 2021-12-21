@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 import { Auth } from './entities/auth.entity';
 import { JwtStrategy } from './jwt/jwt.startegy';
 import { JwtModule } from '@nestjs/jwt';
+import { ClubModule } from 'src/club/club.module';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { JwtModule } from '@nestjs/jwt';
       signOptions: {
         expiresIn: process.env.STAGE === 'dev' ? '1y' : '5d',
       },
-    })
+    }),
+    ClubModule
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
