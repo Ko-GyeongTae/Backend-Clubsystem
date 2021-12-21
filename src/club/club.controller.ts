@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, NotAcceptableException, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Param, Controller, Delete, Get, NotAcceptableException, Post, Request, UseGuards } from '@nestjs/common';
 import { Request as Req } from 'express';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.auth.guard';
 import { ClubService } from './club.service';
@@ -10,6 +10,13 @@ export class ClubController {
     @Get('/list')
     async getClubList() {
         return await this.clubService.getClubList();
+    }
+
+    @Get('/:club')
+    async searchClub(
+        @Param('club') club: string
+    ) {
+        return await this.clubService.searchClub(club);
     }
 
     @Post('/')
