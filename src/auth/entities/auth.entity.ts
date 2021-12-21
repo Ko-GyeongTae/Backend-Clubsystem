@@ -8,7 +8,7 @@ export enum UserType {
 
 @Entity()
 export class Auth extends BaseEntity {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('uuid')
     uid: string;
 
     @Column({ unique: true })
