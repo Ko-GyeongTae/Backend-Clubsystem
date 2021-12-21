@@ -14,6 +14,11 @@ export class ClubService {
         @InjectRepository(Auth)
         private readonly authRepository: Repository<Auth>
     ) { }
+
+    public async getClub(cid: string) {
+        return this.clubRepository.findOne({cid});
+    }
+
     async getClubList() {
         const clublist = await this.clubRepository.findAndCount();
 
@@ -44,7 +49,7 @@ export class ClubService {
     }
 
     async createClub(body: CreateClubDTO) {
-        const { name, description, totalCnt } = body;
+        const { name, description } = body;
 
         const club = await this.clubRepository.findOne({
             where: {
@@ -57,12 +62,12 @@ export class ClubService {
             throw new PreconditionFailedException();
         }
 
-        await this.clubRepository.create({
+        const createdClub = await this.clubRepository.create({
             name,
-            description,
-            total: totalCnt,
+            description: description,
         })
             .save();
+        return createdClub;
     }
 
     async deleteClub(user: Payload) {
