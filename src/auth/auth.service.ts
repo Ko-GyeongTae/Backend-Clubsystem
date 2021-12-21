@@ -53,9 +53,9 @@ export class AuthService {
         let user = null;
         switch(param["type"]){
             case 'admin':
-                user = await this.authRepository.findOne({id});
+                user = await this.authRepository.findOne({id, type: param["type"]});
             case 'user':
-                user = await this.authRepository.findOne({id});
+                user = await this.authRepository.findOne({id, type: param["type"]});
         }
         
         if (!user) {
@@ -108,7 +108,8 @@ export class AuthService {
     }
 
     async dropOut(user: Payload) {
-        return 'drop out';
+        await this.authRepository.delete({id: user.id});
+        return;
     }
 
     async validateType(user: Payload) {
