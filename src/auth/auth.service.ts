@@ -6,6 +6,7 @@ import { SignUpDTO } from './dto/signUp.dto';
 import { Auth } from './entities/auth.entity';
 import * as bcrypt from 'bcrypt';
 import { Club } from 'src/club/entities/club.entity';
+import { Payload } from 'src/auth/jwt/jwt.startegy';
 import { JwtService } from '@nestjs/jwt';
 
 const HASH_LENGTH = 10;
@@ -15,8 +16,6 @@ export class AuthService {
     constructor(
         @InjectRepository(Auth)
         private readonly authRepository: Repository<Auth>,
-        @InjectRepository(Club)
-        private readonly clubRepository: Repository<Club>,
         private readonly jwtService: JwtService
     ){}
     public async findUserById(id: string){
@@ -46,10 +45,17 @@ export class AuthService {
         return [];
     }
 
-    async signIn(body: SignInDTO){
+    async signIn(param: object, body: SignInDTO){
         const { id, password } = body;
-
-        const user = await this.authRepository.findOne({id});
+        console.log(param, body);
+        let user = null;
+        switch(param["type"]){
+            case 'admin':
+                user = await this.authRepository.findOne({id});
+            case 'user':
+                user = await this.authRepository.findOne({id});
+        }
+        
         if (!user) {
             throw new PreconditionFailedException('Wrong ID or PW');
         }
@@ -93,7 +99,13 @@ export class AuthService {
         .save();
     }
 
-    async dropOut() {
+    async dropOut(user: Payload) {
         return 'drop out';
+    }
+
+    async validateType(user: Payload) {
+        return {
+            "type": user.type,
+        }
     }
 }
