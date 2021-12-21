@@ -3,16 +3,16 @@ import { BaseEntity, Column, CreateDateColumn, DeleteDateColumn, Entity, JoinCol
 
 @Entity()
 export class Club extends BaseEntity {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('uuid')
     cid: string;
 
     @Column({ unique: true })
     name: string;
 
-    @Column()
+    @Column({nullable: true})
     description: string;
 
-    @Column()
+    @Column({default: 0})
     total: number; 
 
     @OneToMany(() => Auth, auth => auth.club, {

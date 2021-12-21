@@ -1,4 +1,5 @@
-import { IsString } from "class-validator";
+import { IsNumber, IsString } from "class-validator";
+import { Club } from "src/club/entities/club.entity";
 import { UserType } from "../entities/auth.entity";
 
 export class SignUpDTO {
@@ -15,5 +16,5 @@ export class SignUpDTO {
     studentno: string;
 
     @IsString()
-    type: UserType;
+    club: string;
 }

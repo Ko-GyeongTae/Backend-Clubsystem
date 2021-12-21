@@ -3,11 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SignInDTO } from './dto/signIn.dto';
 import { SignUpDTO } from './dto/signUp.dto';
-import { Auth } from './entities/auth.entity';
+import { Auth, UserType } from './entities/auth.entity';
 import * as bcrypt from 'bcrypt';
 import { Club } from 'src/club/entities/club.entity';
 import { Payload } from 'src/auth/jwt/jwt.startegy';
 import { JwtService } from '@nestjs/jwt';
+import { ClubService } from '../club/club.service';
 
 const HASH_LENGTH = 10;
 
@@ -16,7 +17,8 @@ export class AuthService {
     constructor(
         @InjectRepository(Auth)
         private readonly authRepository: Repository<Auth>,
-        private readonly jwtService: JwtService
+        private readonly jwtService: JwtService,
+        private readonly clubService: ClubService,
     ){}
     public async findUserById(id: string){
         const user = await this.authRepository.findOne({id});
@@ -73,8 +75,8 @@ export class AuthService {
     }
 
     async signUp(body: SignUpDTO){
-        const { id, name, password, studentno, type } = body;
-
+        let type:UserType = UserType[0];
+        const { id, name, password, studentno, club } = body;
         const result = await this.validateExistAccount({id});
 
         if(result.length) {
@@ -87,6 +89,11 @@ export class AuthService {
             )
         }
 
+        let clubObj = await this.clubService.getClub(club);
+        if (!clubObj) {
+            type = UserType[1];
+            clubObj = await this.clubService.createClub({ name: club });
+        }
         const hash = await bcrypt.hash(password, HASH_LENGTH);
 
         await this.authRepository.create({
@@ -94,7 +101,8 @@ export class AuthService {
             name,
             type,
             studentno,
-            password: hash
+            club: clubObj,
+            password: hash,
         })
         .save();
     }
