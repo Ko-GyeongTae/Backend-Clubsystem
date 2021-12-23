@@ -1,11 +1,10 @@
 import { BadRequestException, HttpException, HttpStatus, Injectable, PreconditionFailedException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { getConnection, Repository } from 'typeorm';
 import { SignInDTO } from './dto/signIn.dto';
 import { SignUpDTO } from './dto/signUp.dto';
 import { Auth, UserType } from './entities/auth.entity';
 import * as bcrypt from 'bcrypt';
-import { Club } from 'src/club/entities/club.entity';
 import { Payload } from 'src/auth/jwt/jwt.startegy';
 import { JwtService } from '@nestjs/jwt';
 import { ClubService } from '../club/club.service';
@@ -75,7 +74,6 @@ export class AuthService {
     }
 
     async signUp(body: SignUpDTO){
-        let type:UserType = UserType[0];
         const { id, name, password, studentno, club } = body;
         const result = await this.validateExistAccount({id});
 
@@ -88,23 +86,23 @@ export class AuthService {
                 result[0] as HttpStatus
             )
         }
-
+        
         let clubObj = await this.clubService.getClub(club);
-        if (!clubObj) {
-            type = UserType[1];
-            clubObj = await this.clubService.createClub({ name: club });
-        }
         const hash = await bcrypt.hash(password, HASH_LENGTH);
-
-        await this.authRepository.create({
-            id,
-            name,
-            type,
-            studentno,
-            club: clubObj,
-            password: hash,
-        })
-        .save();
+        
+        const user = new Auth 
+        user.id = id;
+        user.name = name;
+        user.studentno = studentno;
+        user.type = 'USER';
+        user.password = hash;
+        user.club = clubObj;
+        
+        if (!clubObj) {
+            user.type = 'ADMIN';
+            user.club = await this.clubService.createClub({ name: club });
+        }
+        await getConnection().manager.save(user);
     }
 
     async dropOut(user: Payload) {
