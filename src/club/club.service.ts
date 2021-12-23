@@ -15,8 +15,8 @@ export class ClubService {
         private readonly authRepository: Repository<Auth>
     ) { }
 
-    public async getClub(cid: string) {
-        return this.clubRepository.findOne({cid});
+    public async getClub(name: string) {
+        return this.clubRepository.findOne({name});
     }
 
     async getClubList() {
