@@ -18,7 +18,6 @@ export class Club extends BaseEntity {
     @OneToMany(() => Auth, auth => auth.club, {
         onDelete: 'CASCADE'
     })
-    @JoinColumn()
     accounts?: Auth[]
 
     @CreateDateColumn()
