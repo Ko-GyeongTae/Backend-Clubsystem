@@ -89,17 +89,17 @@ export class AuthService {
         
         let clubObj = await this.clubService.getClub(club);
         const hash = await bcrypt.hash(password, HASH_LENGTH);
-
+        
         const user = new Auth 
         user.id = id;
         user.name = name;
         user.studentno = studentno;
-        user.type = UserType[0];
+        user.type = 'USER';
         user.password = hash;
         user.club = clubObj;
         
         if (!clubObj) {
-            user.type = UserType[1];
+            user.type = 'ADMIN';
             user.club = await this.clubService.createClub({ name: club });
         }
         await getConnection().manager.save(user);
