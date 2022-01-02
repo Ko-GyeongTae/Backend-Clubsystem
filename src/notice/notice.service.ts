@@ -17,4 +17,12 @@ export class NoticeService {
     async getNoticeList() {
         return "HELLO"
     }
+
+    async updateNotice(nid: number) {
+        return nid
+    }
+
+    async deleteNotice(nid: number) {
+        return nid
+    }
 }
