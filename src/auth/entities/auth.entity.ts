@@ -39,7 +39,4 @@ export class Auth extends BaseEntity {
 
     @UpdateDateColumn()
     updatedAt: Date;
-
-    @DeleteDateColumn()
-    deletedAt: Date;
 }
