@@ -18,11 +18,19 @@ export class NoticeService {
         return "HELLO"
     }
 
-    async updateNotice(nid: number) {
+    async updateNotice(req: Request, nid: number) {
+        const user:Payload = req["user"];
+        if (user.type === "USER") {
+            throw new ForbiddenException();
+        }
         return nid
     }
 
-    async deleteNotice(nid: number) {
+    async deleteNotice(req: Request, nid: number) {
+        const user:Payload = req["user"];
+        if (user.type === "USER") {
+            throw new ForbiddenException();
+        }
         return nid
     }
 }

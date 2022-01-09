@@ -24,15 +24,17 @@ export class NoticeController {
     
     @Put('/:nid')
     updateNotice(
+        @Req() req: Request,
         @Param('nid') nid: number
     ) {
-        return this.noticeService.updateNotice(nid);
+        return this.noticeService.updateNotice(req, nid);
     }
 
     @Delete('/:nid')
     deleteNotice(
+        @Req() req: Request,
         @Param('nid') nid: number
     ) {
-        return this.noticeService.deleteNotice(nid);
+        return this.noticeService.deleteNotice(req, nid);
     }
 }
